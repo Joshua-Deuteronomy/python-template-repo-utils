@@ -8,6 +8,8 @@ from shutil import rmtree
 from setuptools import Command, find_packages, setup
 from setuptools.command.test import test as TestCommand
 
+from repo_utils import enable_installing_dependencies
+
 
 def read(fname):
     """
@@ -56,7 +58,7 @@ exec(read("package_name/__meta__.py"), meta)
 
 # Import the README and use it as the long-description.
 # If your readme path is different, add it here.
-possible_readme_names = ["README.rst", "README.md", "README.txt", "README"]
+possible_readme_names = ["README.md", "README.rst", "README.txt", "README"]
 
 # Handle turning a README file into long_description
 long_description = meta["description"]
@@ -135,6 +137,10 @@ class UploadCommand(Command):
 
         sys.exit()
 
+# Add init file for every definition. This is necessary when installing for production,
+#   and not necessary when installing in development mode with -e (pip install -e .).
+from repo_utils import enable_installing_dependencies
+init_filepaths = enable_installing_dependencies(package_name=meta["path"])
 
 setup(
     # Essential details on the package and its dependencies
@@ -142,6 +148,10 @@ setup(
     version=meta["version"],
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     package_dir={meta["name"]: os.path.join(".", meta["path"])},
+    entry_points={
+        "console_scripts": [f"{meta["path"]}={meta["path"]}:start_command_line"],
+    },
+    scripts=["install.py"],
     # If any package contains *.txt or *.rst files, include them:
     # package_data={"": ["*.txt", "*.rst"],}
     python_requires=">=3.6",
@@ -173,3 +183,8 @@ setup(
         "upload": UploadCommand,
     },
 )
+
+# Remove init files created by calling enable_installing_dependencies before setup.
+for filepath in init_filepaths:
+    if os.path.exists(filepath):
+        os.remove(filepath)

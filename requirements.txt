@@ -1,1 +1,1 @@
-git+git://github.com/Joshua-Deuteronomy/deut-repo-utils.git
+deut-repo-utils
