@@ -1,10 +1,11 @@
 """ Command line utility for repository """
 import fire
+from repo_utils import get_repository_path
+import os
+import importlib
 
-package_name = __file__.replace(get_repository_path(), '').split(os.sep)[0]
-print('package_name', package_name)
+package_name = __file__.replace(get_repository_path(), '').split(os.sep)[1]
 mod = importlib.import_module(package_name)
-
 
 def start_command_line():
     """

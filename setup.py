@@ -8,8 +8,6 @@ from shutil import rmtree
 from setuptools import Command, find_packages, setup
 from setuptools.command.test import test as TestCommand
 
-from repo_utils import enable_installing_dependencies
-
 
 def read(fname):
     """
@@ -137,10 +135,37 @@ class UploadCommand(Command):
 
         sys.exit()
 
+# START repo_utils addition
+import importlib
+import subprocess
+# sys already imported
+
+def imp(package):
+    """ Import module by name """
+    try:
+      mod = importlib.import_module(package)
+      return mod
+    except (ImportError, KeyError):
+      return None
+
+def install(package): # credit to https://stackoverflow.com/questions/12332975/installing-python-module-within-code
+    subprocess.call([sys.executable, "-m", "pip", "install", package])
+
+def impstall(package):
+    """ Try to import name of package. If import fails, install, then import.
+    """
+    mod = imp(package)
+    if mod is None:
+      install(package)
+      mod = imp(package)
+    return mod
+
+impstall('deut-repo-utils')
+from repo_utils import enable_installing_dependencies
 # Add init file for every definition. This is necessary when installing for production,
 #   and not necessary when installing in development mode with -e (pip install -e .).
-from repo_utils import enable_installing_dependencies
 init_filepaths = enable_installing_dependencies(package_name=meta["path"])
+# END repo_utils addition
 
 setup(
     # Essential details on the package and its dependencies
@@ -148,10 +173,12 @@ setup(
     version=meta["version"],
     packages=find_packages(exclude=["tests", "*.tests", "*.tests.*", "tests.*"]),
     package_dir={meta["name"]: os.path.join(".", meta["path"])},
+    # START repo_utils addition
     entry_points={
-        "console_scripts": [f"{meta["path"]}={meta["path"]}:start_command_line"],
+        "console_scripts": [f"{meta['path']}={meta['path']}:start_command_line"],
     },
     scripts=["install.py"],
+    # END repo_utils addition
     # If any package contains *.txt or *.rst files, include them:
     # package_data={"": ["*.txt", "*.rst"],}
     python_requires=">=3.6",
@@ -184,7 +211,9 @@ setup(
     },
 )
 
+# START repo_utils addition
 # Remove init files created by calling enable_installing_dependencies before setup.
 for filepath in init_filepaths:
     if os.path.exists(filepath):
         os.remove(filepath)
+# END repo_utils addition
