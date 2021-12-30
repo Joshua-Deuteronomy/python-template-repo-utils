@@ -161,10 +161,10 @@ def impstall(package):
     return mod
 
 impstall('deut-repo-utils')
-from repo_utils import enable_installing_dependencies
+from repo_utils import enable_installing_dependencies, get_repository_path
 # Add init file for every definition. This is necessary when installing for production,
 #   and not necessary when installing in development mode with -e (pip install -e .).
-init_filepaths = enable_installing_dependencies(package_name=meta["path"])
+init_filepaths = enable_installing_dependencies(get_repository_path(), meta["path"])
 # END repo_utils addition
 
 setup(
