@@ -76,21 +76,7 @@ When creating a new repository from this template, these are the steps to follow
     If you prefer, you can keep them around as samples, but should note that they require numpy.
 
 #.  Depending on your needs, some of the files may be superfluous to you.
-    You can remove any superfluous files, as follows.
-
-    - *No GitHub Actions!*
-      Delete the .github directory::
-
-        rm -r .github/
-
-    - *No unit testing!*
-      Run the following commands to delete unit testing files::
-
-        rm -rf package_name/tests/
-        rm -f .github/workflows/test*.yaml
-        rm -f .codecov.yml
-        rm -f .coveragerc
-        rm -f requirements-test.txt
+    You can remove any superfluous files.
 
 #.  Delete the LICENSE file and replace it with a LICENSE file of your own choosing.
     If the code is intended to be freely available for anyone to use, use an `open source license <https://choosealicense.com/>`_, such as `MIT License <https://choosealicense.com/licenses/mit/>`__ or `GPLv3 <https://choosealicense.com/licenses/gpl-3.0/>`__.
