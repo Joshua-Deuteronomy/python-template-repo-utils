@@ -91,7 +91,7 @@ Here are recommended aliases for your .bashrc file for convenience:
 `alias test="repo_utils test_def"`  
 `alias finddef="repo_utils find_definition"`  
 `alias mvdef="repo_utils rename_def"`  
-`alias instdef="repo_utils install_def"`  
+`alias instdef="repo_utils install_dependencies"`  
 
 To go to the directory of a definition:  
 `cd $(finddef <definition name>)`
